@@ -28,13 +28,29 @@ function randomString(len) {
   return str;
 }
 
-for (let i = 0; i < 15; ++i) {
-  let body = fileBody();
-  let name = fileName();
-
-  fs.writeFile('./new-files/' + name, body, function (err) {
-    if (err) return console.error(err);
-
-    console.log(`0k: ${name}, ${body.length} chars.`);
-  });
+try {
+  fs.mkdirSync('ftp-files', 0o777);
+} catch (err) {
+  console.log('ftp-files', err.code);
 }
+
+try {
+  fs.mkdirSync('old-files', 0o777);
+} catch (err) {
+  console.log('old-files', err.code);
+}
+
+fs.mkdir('new-files', function (err) {
+  if (err) console.log('new-files', err.code);
+  
+  for (let i = 0; i < 15; ++i) {
+    let body = fileBody();
+    let name = fileName();
+
+    fs.writeFile('./new-files/' + name, body, function (err) {
+      if (err) return console.error(err);
+
+      console.log(`0k: ${name}, ${body.length} chars.`);
+    });
+  }
+});
